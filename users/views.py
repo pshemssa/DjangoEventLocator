@@ -12,26 +12,36 @@ def register(request):
             user = form.save()
             login(request, user)
             messages.success(request, _('Your account has been created successfully!'))
-            return redirect('profile')
+            return redirect('users:profile')
     else:
         form = UserRegistrationForm()
     return render(request, 'users/register.html', {'form': form})
 
 @login_required
-def profile(request):
-    if request.method == 'POST':
-        form = UserProfileForm(request.POST, request.FILES, instance=request.user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, _('Your profile has been updated successfully!'))
-            return redirect('profile')
+def profile(request, username=None):
+    if username is None:
+        user = request.user
+        if request.method == 'POST':
+            form = UserProfileForm(request.POST, request.FILES, instance=user)
+            if form.is_valid():
+                form.save()
+                messages.success(request, _('Your profile has been updated successfully!'))
+                return redirect('users:profile')
+        else:
+            form = UserProfileForm(instance=user)
     else:
-        form = UserProfileForm(instance=request.user)
+        from django.shortcuts import get_object_or_404
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        user = get_object_or_404(User, username=username)
+        form = None
 
     context = {
+        'profile_user': user,
         'form': form,
-        'events_created': request.user.get_events_created(),
-        'events_attending': request.user.get_events_attending(),
-        'favorite_events': request.user.get_favorite_events(),
+        'events_created': user.get_events_created(),
+        'events_attending': user.get_events_attending(),
+        'favorite_events': user.get_favorite_events(),
+        'is_own_profile': user == request.user
     }
     return render(request, 'users/profile.html', context)

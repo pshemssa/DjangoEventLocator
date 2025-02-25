@@ -18,12 +18,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import TemplateView
+from events.views import EventListView
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('', EventListView.as_view(), name='home'),
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
+    path('events/', include('events.urls')),
 ]
 
 if settings.DEBUG:

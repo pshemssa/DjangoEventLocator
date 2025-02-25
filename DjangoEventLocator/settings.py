@@ -145,7 +145,7 @@ EMAIL_HOST_PASSWORD = ''  # Add your email password or app password
 # Login/Logout URLs
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
-LOGIN_URL = 'login'
+LOGIN_URL = 'users:login'
 
 # Custom User Model
 AUTH_USER_MODEL = 'users.User'
