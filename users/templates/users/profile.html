@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ user.get_full_name|default:user.username }}'s Profile - Event Locator{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Profile Information -->
+    <div class="col-md-4 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h2 class="h4 mb-0">Profile Information</h2>
+            </div>
+            <div class="card-body">
+                {% if user.profile_picture %}
+                    <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="img-fluid rounded-circle mb-3">
+                {% endif %}
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary w-100 mt-3">Update Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Events -->
+    <div class="col-md-8">
+        <!-- Events Created -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-success text-white">
+                <h3 class="h5 mb-0">Events Created</h3>
+            </div>
+            <div class="card-body">
+                {% if events_created %}
+                    <div class="list-group">
+                        {% for event in events_created %}
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ event.title }}</h5>
+                                    <small>{{ event.date|date }}</small>
+                                </div>
+                                <p class="mb-1">{{ event.description|truncatewords:30 }}</p>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">You haven't created any events yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Events Attending -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-info text-white">
+                <h3 class="h5 mb-0">Events Attending</h3>
+            </div>
+            <div class="card-body">
+                {% if events_attending %}
+                    <div class="list-group">
+                        {% for event in events_attending %}
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ event.title }}</h5>
+                                    <small>{{ event.date|date }}</small>
+                                </div>
+                                <p class="mb-1">{{ event.description|truncatewords:30 }}</p>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">You're not attending any events yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Favorite Events -->
+        <div class="card shadow">
+            <div class="card-header bg-warning">
+                <h3 class="h5 mb-0">Favorite Events</h3>
+            </div>
+            <div class="card-body">
+                {% if favorite_events %}
+                    <div class="list-group">
+                        {% for event in favorite_events %}
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ event.title }}</h5>
+                                    <small>{{ event.date|date }}</small>
+                                </div>
+                                <p class="mb-1">{{ event.description|truncatewords:30 }}</p>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">You don't have any favorite events yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
